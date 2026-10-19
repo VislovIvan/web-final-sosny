@@ -1,1 +1,117 @@
-/* Мои брони: список и отмена */
+/* Мои брони: карточки броней, отмена с подтверждением */
+
+.orders-top {
+  display: grid;
+}
+
+.orders-top .notice-list:not(:empty) {
+  margin-bottom: 16px;
+}
+
+.orders-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.reset-zone {
+  margin-left: auto;
+}
+
+.reset-zone .confirm {
+  justify-content: flex-end;
+}
+
+.reset-zone .confirm-question {
+  text-align: right;
+}
+
+.orders-empty {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 24px;
+  font-size: 18px;
+}
+
+.orders-list {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-card {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 20px;
+}
+
+.order-card.is-new {
+  border: var(--rule) solid var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.order-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.order-number {
+  margin-right: auto;
+  color: var(--text-muted);
+}
+
+.order-house {
+  font-size: 30px;
+}
+
+.order-dates {
+  color: var(--text-muted);
+}
+
+.order-total {
+  font-family: var(--font-display);
+  font-size: 24px;
+  -webkit-font-smoothing: none;
+}
+
+.order-card.is-cancelled .order-house,
+.order-card.is-cancelled .order-total {
+  color: var(--text-muted);
+}
+
+.order-card.is-cancelled .order-total {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.order-actions,
+.confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.order-actions {
+  margin-top: 6px;
+}
+
+.confirm-question {
+  flex-basis: 100%;
+  font-weight: 600;
+}
+
+@media (min-width: 760px) {
+  .orders-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+}

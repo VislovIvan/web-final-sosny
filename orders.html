@@ -43,7 +43,28 @@
 
     <p class="demo-note"><span class="label">Учебное демо:</span> бронирования сохраняются только в этом браузере, оплаты нет</p>
 
-    <p class="notice">Раздел в разработке: здесь будет список броней с отменой.</p>
+    <div class="orders-top">
+      <div class="notice-list" id="storage-notice"></div>
+      <div class="notice-list" id="orders-messages" aria-live="polite"></div>
+      <div class="orders-toolbar">
+        <p class="label" id="orders-count"></p>
+        <div class="reset-zone" id="reset-zone" hidden>
+          <button class="btn btn-sm btn-danger" type="button" id="reset-demo">Сбросить демо</button>
+          <div class="confirm" id="reset-confirm" role="group" aria-label="Сброс демо" hidden>
+            <p class="confirm-question">Удалить все брони из этого браузера?</p>
+            <button class="btn btn-sm btn-danger" type="button" id="reset-yes">Да, удалить</button>
+            <button class="btn btn-sm" type="button" id="reset-no">Нет</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="orders-list" id="orders-list"></ul>
+
+    <div class="notice orders-empty" id="orders-empty" hidden>
+      <p>Броней пока нет. Выберите дом в каталоге, и бронь появится здесь.</p>
+      <a class="btn btn-primary" id="empty-link" href="catalog.html">Перейти в каталог</a>
+    </div>
   </main>
 
   <footer class="site-footer">
