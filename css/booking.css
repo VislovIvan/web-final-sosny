@@ -63,8 +63,61 @@
 }
 
 .total-value:empty,
-.field-hint:empty {
+.field-hint:empty,
+#forecast-note:empty {
   display: none;
+}
+
+.forecast-body {
+  display: grid;
+  gap: 12px;
+}
+
+.forecast-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.forecast-list:empty {
+  display: none;
+}
+
+.forecast-day {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "date temp"
+    "desc desc";
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.forecast-day:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.forecast-date {
+  grid-area: date;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.forecast-desc {
+  grid-area: desc;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+}
+
+.forecast-temp {
+  grid-area: temp;
+  white-space: nowrap;
 }
 
 @media (min-width: 960px) {
@@ -87,5 +140,15 @@
 
   .house-title {
     font-size: 50px;
+  }
+
+  .forecast-window {
+    grid-area: forecast;
+  }
+
+  .forecast-day {
+    grid-template-columns: 150px minmax(0, 1fr) auto;
+    grid-template-areas: "date desc temp";
+    align-items: center;
   }
 }

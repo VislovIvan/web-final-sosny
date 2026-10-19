@@ -77,6 +77,26 @@ const ICONS = {
     ['path', { d: 'M13 8a5 5 0 1 1-1.5-3.5', ...STROKE }],
     ['path', { d: 'M12 1v4H8', ...STROKE }],
   ],
+  sun: [
+    ['circle', { cx: 8, cy: 8, r: 3, ...STROKE }],
+    ['path', { d: 'M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4', ...STROKE }],
+  ],
+  cloud: [['path', { d: 'M4 12H12A3 3 0 0 0 12 6A4 4 0 0 0 4.5 7A2.5 2.5 0 0 0 4 12Z', ...STROKE }]],
+  fog: [['path', { d: 'M2 5h12M3 8h10M2 11h12', ...STROKE }]],
+  rain: [
+    ['path', { d: 'M4.5 9H11.5A2.5 2.5 0 0 0 11.5 4A3.5 3.5 0 0 0 5 4.5A2.25 2.25 0 0 0 4.5 9Z', ...STROKE }],
+    ['path', { d: 'M5.5 11.5l-1 2.5M8.5 11.5l-1 2.5M11.5 11.5l-1 2.5', ...STROKE }],
+  ],
+  snow: [
+    ['path', { d: 'M4.5 9H11.5A2.5 2.5 0 0 0 11.5 4A3.5 3.5 0 0 0 5 4.5A2.25 2.25 0 0 0 4.5 9Z', ...STROKE }],
+    ['circle', { cx: 5, cy: 12, r: 1, fill: 'currentColor' }],
+    ['circle', { cx: 8, cy: 13, r: 1, fill: 'currentColor' }],
+    ['circle', { cx: 11, cy: 12, r: 1, fill: 'currentColor' }],
+  ],
+  storm: [
+    ['path', { d: 'M4.5 9H11.5A2.5 2.5 0 0 0 11.5 4A3.5 3.5 0 0 0 5 4.5A2.25 2.25 0 0 0 4.5 9Z', ...STROKE }],
+    ['path', { d: 'M8.5 10l-2 2.5h2.5l-2 2.5', ...STROKE }],
+  ],
 };
 
 export function icon(name, className = 'icon') {

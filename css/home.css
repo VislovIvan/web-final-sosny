@@ -51,7 +51,6 @@
 .home-tools {
   display: grid;
   gap: 24px;
-  align-items: start;
 }
 
 .pick-form {
@@ -70,6 +69,47 @@
 
 .pick-from {
   grid-column: 1 / -1;
+}
+
+/* Пустой квадрат слева уравновешивает кнопку обновления, заголовок по центру */
+.window-spacer {
+  flex: none;
+  width: 24px;
+}
+
+.weather-body {
+  display: grid;
+  gap: 16px;
+}
+
+.weather-result {
+  display: grid;
+  gap: 16px;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.weather-icon .icon {
+  width: 60px;
+  height: 60px;
+}
+
+.weather-icon .icon * {
+  vector-effect: non-scaling-stroke;
+}
+
+.weather-temp {
+  font-size: 50px;
+  line-height: 1;
+}
+
+.weather-desc {
+  margin-top: 6px;
+  font-size: 18px;
 }
 
 .steps {
@@ -125,6 +165,12 @@
 
   .pick-from {
     grid-column: auto;
+  }
+}
+
+@media (pointer: coarse) {
+  .window-spacer {
+    width: 36px;
   }
 }
 
