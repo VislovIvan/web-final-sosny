@@ -17,7 +17,9 @@ const totalCalc = $('#total-calc');
 const totalValue = $('#total-value');
 const formMessages = $('#form-messages');
 
-const house = getHouse(new URLSearchParams(location.search).get('id'));
+const params = new URLSearchParams(location.search);
+const houseId = params.get('id');
+const house = getHouse(houseId);
 const touched = new Set();
 
 function readRaw() {
@@ -38,6 +40,14 @@ function update() {
   const nights = Number(raw.nights);
   const checkout = errors.from || errors.nights ? null : addDays(raw.from, nights);
   fromHint.textContent = checkout ? `Выезд ${formatDate(checkout)}, ${formatWeekday(checkout)}` : '';
+  const back = new URLSearchParams();
+  if (checkout) {
+    back.set('from', raw.from);
+    back.set('nights', nights);
+  }
+  if (!errors.guests) back.set('guests', raw.guests);
+  $('#change-house').href = `catalog.html?${back}`;
+
   if (errors.nights) {
     totalCalc.textContent = 'Сумма появится, когда число ночей будет от 1 до 30.';
     totalValue.textContent = '';
@@ -75,15 +85,28 @@ function submit(event) {
   location.assign(`orders.html?new=${encodeURIComponent(result.booking.number)}`);
 }
 
+// Значения из ссылки каталога проверяются сразу, пустые заменяются значениями по умолчанию
+function prefill(today) {
+  const defaults = { from: addDays(today, 1), nights: '2', guests: String(Math.min(2, house.capacity)) };
+  for (const name of FIELDS) {
+    const value = params.get(name);
+    if (value) {
+      inputs[name].value = value;
+      touched.add(name);
+    } else {
+      inputs[name].value = defaults[name];
+    }
+  }
+}
+
 function initBooking() {
   const today = todayISO();
   inputs.from.min = today;
   inputs.from.max = addDays(today, MAX_DAYS_AHEAD);
   inputs.guests.max = String(house.capacity);
-  inputs.from.value = addDays(today, 1);
-  inputs.nights.value = '2';
-  inputs.guests.value = String(Math.min(2, house.capacity));
+  prefill(today);
 
+  document.title = `Бронь: ${house.name} · Сосны`;
   fillHouse();
   $('#booking-layout').hidden = false;
   update();
@@ -98,9 +121,12 @@ function initBooking() {
   form.addEventListener('submit', submit);
 }
 
-if (house) {
-  initBooking();
-} else {
-  $('#missing-text').textContent = 'Дом не найден. Выберите дом в каталоге.';
+function showMissing() {
+  $('#missing-text').textContent = houseId
+    ? `Дом «${houseId.slice(0, 30)}» не найден: ссылка неверная или устарела. Выберите дом в каталоге.`
+    : 'Дом не выбран. Выберите свободный дом в каталоге, и он появится здесь вместе с датами.';
   $('#booking-missing').hidden = false;
 }
+
+if (house) initBooking();
+else showMissing();
