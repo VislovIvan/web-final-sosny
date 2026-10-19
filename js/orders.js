@@ -1,7 +1,7 @@
 import { initLayout, el, formatPrice, plural, showMessage } from './ui.js';
 import { getHouse, houseNumber } from './data.js';
-import { formatStay } from './dates.js';
-import { cancelBooking, loadBookings, STORAGE_PROBLEMS } from './storage.js';
+import { formatStay, todayISO } from './dates.js';
+import { cancelBooking, loadBookings, resetBookings, STORAGE_KEY, STORAGE_PROBLEMS } from './storage.js';
 
 initLayout();
 
@@ -13,6 +13,15 @@ const list = $('#orders-list');
 const empty = $('#orders-empty');
 const count = $('#orders-count');
 const messages = $('#orders-messages');
+const storageNotice = $('#storage-notice');
+const resetZone = $('#reset-zone');
+const resetButton = $('#reset-demo');
+const resetConfirm = $('#reset-confirm');
+
+const LOAD_PROBLEMS = {
+  corrupt: `${STORAGE_PROBLEMS.corrupt} Нажмите «Сбросить демо», чтобы начать список заново.`,
+  blocked: `${STORAGE_PROBLEMS.blocked} Брони здесь не появятся, пока сохранение запрещено.`,
+};
 
 const newNumber = new URLSearchParams(location.search).get('new');
 
@@ -24,6 +33,15 @@ function houseLabel(booking) {
 function stayLine(booking) {
   const { from, nights, guests } = booking;
   return `${formatStay(from, nights)} · ${nights} ${plural(nights, NIGHT_WORDS)} · ${guests} ${plural(guests, GUEST_WORDS)}`;
+}
+
+// Отменённую бронь можно повторить на те же даты, если они ещё не прошли
+function rebookUrl(booking) {
+  const params = new URLSearchParams({ id: booking.houseId });
+  if (booking.status === 'cancelled' && booking.from >= todayISO()) params.set('from', booking.from);
+  params.set('nights', booking.nights);
+  params.set('guests', booking.guests);
+  return `booking.html?${params}`;
 }
 
 // Отмена в два шага на самой карточке: «Отменить» → «Да, отменить» или «Нет»
@@ -66,7 +84,10 @@ function renderCard(booking) {
     el('h2', { class: 'order-house', text: booking.houseName }),
     el('p', { class: 'order-dates', text: stayLine(booking) }),
     el('p', { class: 'order-total', text: formatPrice(booking.total) }),
-    el('div', { class: 'order-actions' }, ...(active ? cancelControls(booking) : [])),
+    el('div', { class: 'order-actions' },
+      ...(active ? cancelControls(booking) : []),
+      el('a', { class: 'btn btn-sm rebook', href: rebookUrl(booking), text: 'Оформить снова' }),
+    ),
   );
   card.classList.toggle('is-new', isNew);
   card.classList.toggle('is-cancelled', !active);
@@ -80,6 +101,8 @@ function render() {
   empty.hidden = bookings.length > 0;
   const active = bookings.filter((booking) => booking.status === 'active').length;
   count.textContent = bookings.length ? `Активные: ${active} · Отменённые: ${bookings.length - active}` : '';
+  showMessage(storageNotice, problem && LOAD_PROBLEMS[problem], 'error');
+  resetZone.hidden = bookings.length === 0 && problem !== 'corrupt';
   return { bookings, problem };
 }
 
@@ -92,14 +115,51 @@ function cancel(booking) {
   }
   render();
   showMessage(messages, `Бронь ${booking.number} отменена. Дом «${booking.houseName}» снова свободен ${formatStay(booking.from, booking.nights)}.`, 'ok');
+  list.querySelector(`[data-number="${booking.number}"] .rebook`)?.focus();
+}
+
+function toggleResetConfirm(open) {
+  resetConfirm.hidden = !open;
+  resetButton.hidden = open;
+  (open ? $('#reset-no') : resetButton).focus();
+}
+
+function initReset() {
+  resetButton.addEventListener('click', () => toggleResetConfirm(true));
+  $('#reset-no').addEventListener('click', () => toggleResetConfirm(false));
+  resetConfirm.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') toggleResetConfirm(false);
+  });
+  $('#reset-yes').addEventListener('click', () => {
+    const result = resetBookings();
+    resetConfirm.hidden = true;
+    resetButton.hidden = false;
+    if (!result.ok) {
+      showMessage(messages, STORAGE_PROBLEMS[result.problem], 'error');
+      resetButton.focus();
+      return;
+    }
+    render();
+    showMessage(messages, 'Демо сброшено: брони из этого браузера удалены.', 'ok');
+    $('#empty-link').focus();
+  });
 }
 
 function init() {
+  initReset();
   const { bookings } = render();
   const created = bookings.find((booking) => booking.number === newNumber);
   if (created) {
     showMessage(messages, `Бронь ${created.number} оформлена: «${created.houseName}», ${formatStay(created.from, created.nights)}. Оплата не нужна, это учебная бронь.`, 'ok');
   }
+
+  // Брони из другой вкладки и возврат кнопкой «Назад»
+  window.addEventListener('storage', (event) => {
+    if (event.key === STORAGE_KEY || event.key === null) render();
+  });
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) render();
+  });
 }
 
 init();

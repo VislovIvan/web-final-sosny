@@ -8,6 +8,34 @@
   margin-bottom: 16px;
 }
 
+.orders-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.reset-zone {
+  margin-left: auto;
+}
+
+.reset-zone .confirm {
+  justify-content: flex-end;
+}
+
+.reset-zone .confirm-question {
+  text-align: right;
+}
+
+.orders-empty {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 24px;
+  font-size: 18px;
+}
+
 .orders-list {
   display: grid;
   gap: 16px;
