@@ -1,0 +1,97 @@
+/* Главная: первый экран, факты о базе, шаги брони */
+
+.hero {
+  display: grid;
+  gap: 30px;
+}
+
+.hero-text {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+}
+
+.hero-title {
+  font-size: 80px;
+  line-height: 1;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.hero-facts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.hero-facts li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: 14px 0;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.fact-value {
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 1.1;
+  -webkit-font-smoothing: none;
+  color: var(--text);
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: grid;
+  gap: 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-strong);
+}
+
+.step-num {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1;
+  -webkit-font-smoothing: none;
+}
+
+.step-title {
+  font-size: 20px;
+}
+
+@media (min-width: 760px) {
+  .hero {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    align-items: end;
+    gap: 60px;
+  }
+
+  .hero-title {
+    font-size: 120px;
+  }
+
+  .fact-value {
+    font-size: 40px;
+  }
+
+  .steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 30px;
+  }
+}
