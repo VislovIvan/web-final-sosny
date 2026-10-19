@@ -1,6 +1,6 @@
 /* Общие стили сайта «Сосны»: подключаются после mac.css на всех страницах */
 
-/* ── Переход к содержимому с клавиатуры ── */
+/* Переход к содержимому с клавиатуры */
 
 .skip-link {
   position: absolute;
@@ -22,12 +22,13 @@
   transform: none;
 }
 
-/* ── Шапка ── */
+/* Шапка */
 
 .brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-height: 40px;
 }
 
 .brand-mark {
@@ -51,13 +52,26 @@
   display: block;
 }
 
-@media (max-width: 759px) {
+.site-header-inner {
+  gap: 8px;
+}
+
+@media (min-width: 760px) {
   .site-header-inner {
-    gap: 8px;
+    gap: 16px;
   }
 }
 
-/* ── Страница ── */
+/* Планшет: пункты меню в строку, но цель нажатия не меньше 40 px */
+@media (pointer: coarse) and (min-width: 760px) {
+  .nav-link {
+    min-width: 40px;
+    padding: 12px 0 10px;
+    text-align: center;
+  }
+}
+
+/* Страница */
 
 .page {
   display: grid;
@@ -119,7 +133,7 @@
   }
 }
 
-/* ── Мелкие общие элементы ── */
+/* Мелкие общие элементы */
 
 .icon {
   flex: none;
@@ -181,7 +195,7 @@
   text-align: right;
 }
 
-/* ── Поля форм ── */
+/* Поля форм */
 
 /* Поле даты в Chrome на 2px выше остальных полей */
 .input[type="date"] {
@@ -203,7 +217,7 @@
   grid-column: 1 / -1;
 }
 
-/* ── Подвал ── */
+/* Подвал */
 
 .site-footer p {
   max-width: 760px;

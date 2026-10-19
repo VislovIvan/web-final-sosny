@@ -1,8 +1,6 @@
 // Даты строкой YYYY-MM-DD по местному времени, без перевода в UTC
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-export function toISODate(date) {
+function toISODate(date) {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${date.getFullYear()}-${month}-${day}`;
@@ -25,10 +23,6 @@ export function addDays(iso, days) {
   const date = parseISODate(iso);
   date.setDate(date.getDate() + days);
   return toISODate(date);
-}
-
-export function daysBetween(fromIso, toIso) {
-  return Math.round((parseISODate(toIso) - parseISODate(fromIso)) / DAY_MS);
 }
 
 // Ночи [заезд, выезд) пересекаются, если каждый заезд раньше чужого выезда

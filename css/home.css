@@ -169,8 +169,13 @@
 }
 
 @media (pointer: coarse) {
-  .window-spacer {
-    width: 36px;
+  .window-spacer,
+  .weather .window-box {
+    width: 40px;
+  }
+
+  .weather .window-box {
+    height: 40px;
   }
 }
 

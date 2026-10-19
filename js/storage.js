@@ -40,7 +40,7 @@ function parseStore(text) {
 }
 
 // problem: null, 'corrupt' или 'blocked'; при проблеме страница работает с пустым списком
-export function readStore() {
+function readStore() {
   let text;
   try {
     text = localStorage.getItem(STORAGE_KEY);
@@ -69,7 +69,7 @@ export function loadBookings() {
   return { bookings: store.bookings, problem };
 }
 
-export function formatBookingNumber(seq) {
+function formatBookingNumber(seq) {
   return `С-${String(seq).padStart(4, '0')}`;
 }
 

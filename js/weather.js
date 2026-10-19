@@ -88,7 +88,10 @@ export async function fetchCurrentWeather(signal) {
     wind_speed_unit: 'ms',
   }, signal);
   const now = data?.current;
-  if (!now || !Number.isFinite(now.temperature_2m)) throw new WeatherError('Сервис погоды прислал неполные данные.');
+  const numbers = ['temperature_2m', 'apparent_temperature', 'wind_speed_10m', 'weather_code'];
+  if (!now || typeof now.time !== 'string' || !numbers.every((key) => Number.isFinite(now[key]))) {
+    throw new WeatherError('Сервис погоды прислал неполные данные.');
+  }
   return {
     temperature: now.temperature_2m,
     feelsLike: now.apparent_temperature,

@@ -1,5 +1,4 @@
-// Общие данные базы «Сосны»: одни ID домов для всех страниц.
-// x и y: центр дома на схеме в процентах. busy: демо-занятость, offset в днях от сегодня.
+// Дома базы для всех страниц: x и y в процентах схемы, busy с offset в днях от сегодня
 
 import { addDays, parseISODate, rangesOverlap, todayISO } from './dates.js';
 
@@ -129,7 +128,7 @@ export function houseNumber(house) {
   return house.id.slice(1);
 }
 
-export function demoBusy(house, today = todayISO()) {
+function demoBusy(house, today = todayISO()) {
   return house.busy.map(({ offset, nights }) => ({ from: addDays(today, offset), nights }));
 }
 
