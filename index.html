@@ -54,6 +54,33 @@
 
     <p class="demo-note"><span class="label">Учебное демо:</span> бронирования сохраняются только в этом браузере, оплаты нет</p>
 
+    <div class="home-tools">
+      <section class="window" aria-labelledby="pick-form-title">
+        <div class="window-bar"><h2 class="window-title" id="pick-form-title">Подобрать отдых</h2></div>
+        <form class="window-body pick-form" id="pick-form" action="catalog.html" method="get" novalidate>
+          <p class="muted">Покажем, какие дома свободны на ваши даты.</p>
+          <div class="pick-fields">
+            <div class="field pick-from">
+              <label class="field-label" for="home-from">Дата заезда</label>
+              <input class="input" type="date" id="home-from" name="from" required aria-describedby="home-from-error">
+              <p class="field-error" id="home-from-error"></p>
+            </div>
+            <div class="field">
+              <label class="field-label" for="home-nights">Ночей</label>
+              <input class="input" type="number" id="home-nights" name="nights" min="1" max="30" step="1" inputmode="numeric" required aria-describedby="home-nights-error">
+              <p class="field-error" id="home-nights-error"></p>
+            </div>
+            <div class="field">
+              <label class="field-label" for="home-guests">Гостей</label>
+              <input class="input" type="number" id="home-guests" name="guests" min="1" max="8" step="1" inputmode="numeric" required aria-describedby="home-guests-error">
+              <p class="field-error" id="home-guests-error"></p>
+            </div>
+          </div>
+          <button class="btn btn-primary" type="submit">Показать дома</button>
+        </form>
+      </section>
+    </div>
+
     <section class="section" aria-labelledby="steps-title">
       <h2 class="section-title" id="steps-title">Как проходит бронь</h2>
       <ol class="steps">

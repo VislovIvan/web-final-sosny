@@ -43,22 +43,47 @@
 
     <p class="demo-note"><span class="label">Учебное демо:</span> бронирования сохраняются только в этом браузере, оплаты нет</p>
 
-    <form class="filters card-soft" id="filters" aria-label="Даты поездки" novalidate>
-      <div class="filters-grid">
-        <label class="field">
-          <span class="field-label">Заезд</span>
-          <input class="input" type="date" id="from" name="from" required aria-describedby="dates-error">
-        </label>
-        <label class="field">
-          <span class="field-label">Ночей</span>
-          <input class="input" type="number" id="nights" name="nights" min="1" max="30" step="1" inputmode="numeric" required aria-describedby="dates-error">
-        </label>
-      </div>
-      <p class="field-error" id="dates-error"></p>
-    </form>
-
-    <div class="catalog-status">
-      <p class="label" id="result-count" aria-live="polite"></p>
+    <div class="catalog-controls">
+      <form class="filters card-soft" id="filters" aria-label="Даты и фильтры" novalidate>
+        <div class="filters-grid">
+          <label class="field">
+            <span class="field-label">Заезд</span>
+            <input class="input" type="date" id="from" name="from" required aria-describedby="dates-error">
+          </label>
+          <label class="field">
+            <span class="field-label">Ночей</span>
+            <input class="input" type="number" id="nights" name="nights" min="1" max="30" step="1" inputmode="numeric" required aria-describedby="dates-error">
+          </label>
+          <label class="field">
+            <span class="field-label">Гостей не меньше</span>
+            <select class="select" id="guests" name="guests">
+              <option value="">Любое</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="field-label">Цена за ночь до</span>
+            <select class="select" id="price" name="price">
+              <option value="">Любая</option>
+              <option value="5000">5 000 ₽</option>
+              <option value="7500">7 500 ₽</option>
+              <option value="10000">10 000 ₽</option>
+              <option value="12000">12 000 ₽</option>
+            </select>
+          </label>
+        </div>
+        <p class="field-error" id="dates-error"></p>
+        <div class="filters-foot">
+          <p class="label" id="result-count" aria-live="polite"></p>
+          <button class="btn btn-sm" type="button" id="reset-filters">Сбросить фильтры</button>
+        </div>
+      </form>
       <div class="notice-list" id="storage-notice"></div>
       <div class="notice-list" id="catalog-messages" aria-live="polite"></div>
       <p class="visually-hidden" id="selection-status" aria-live="polite"></p>
@@ -140,6 +165,7 @@
             <text class="map-label" x="656" y="92">ПРИЧАЛ</text>
             <text class="map-label map-label-road" x="20" y="540">← ПРИОЗЕРСК 15 КМ</text>
           </svg>
+          <p class="map-empty" id="map-empty" hidden>Нет домов под эти фильтры</p>
         </div>
         <ul class="map-legend" aria-label="Обозначения на схеме">
           <li><span class="legend-key" aria-hidden="true">1</span>Свободен</li>
@@ -172,6 +198,10 @@
       <section class="window list-window" aria-labelledby="list-title">
         <div class="window-bar"><h2 class="window-title" id="list-title">Дома</h2></div>
         <ul class="house-list" id="house-list"></ul>
+        <div class="list-empty" id="list-empty" hidden>
+          <p>Под эти условия домов нет. Уменьшите число гостей или поднимите цену.</p>
+          <button class="btn btn-sm" type="button" id="empty-reset">Сбросить фильтры</button>
+        </div>
       </section>
     </div>
   </main>
