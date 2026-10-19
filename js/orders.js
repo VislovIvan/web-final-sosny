@@ -14,7 +14,7 @@ const empty = $('#orders-empty');
 const count = $('#orders-count');
 const messages = $('#orders-messages');
 const storageNotice = $('#storage-notice');
-const resetZone = $('#reset-zone');
+const toolbar = $('#orders-toolbar');
 const resetButton = $('#reset-demo');
 const resetConfirm = $('#reset-confirm');
 
@@ -102,7 +102,7 @@ function render() {
   const active = bookings.filter((booking) => booking.status === 'active').length;
   count.textContent = bookings.length ? `Активные: ${active} · Отменённые: ${bookings.length - active}` : '';
   showMessage(storageNotice, problem && LOAD_PROBLEMS[problem], 'error');
-  resetZone.hidden = bookings.length === 0 && problem !== 'corrupt';
+  toolbar.hidden = bookings.length === 0 && problem !== 'corrupt';
   return { bookings, problem };
 }
 
