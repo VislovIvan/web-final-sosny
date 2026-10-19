@@ -207,10 +207,10 @@ function submit(event) {
   const result = addBooking({ house, ...values });
   if (!result.ok) {
     setSubmitting(false);
-    const extra = result.problem === 'overlap' ? ` Номер ${result.booking.number}.` : ' Бронь не сохранена.';
-    showMessage(formMessages, `${STORAGE_PROBLEMS[result.problem]}${extra}`, 'error');
     refreshBookings();
     update();
+    const extra = result.problem === 'overlap' ? ` Номер ${result.booking.number}.` : ' Бронь не сохранена.';
+    showMessage(formMessages, `${STORAGE_PROBLEMS[result.problem]}${extra}`, 'error');
     return;
   }
   location.assign(`orders.html?new=${encodeURIComponent(result.booking.number)}`);

@@ -1,5 +1,5 @@
 import { initLayout, el, formatPrice, plural, showMessage } from './ui.js';
-import { getHouse, houseNumber } from './data.js';
+import { findConflict, getHouse, houseNumber } from './data.js';
 import { formatStay, todayISO } from './dates.js';
 import { cancelBooking, loadBookings, resetBookings, STORAGE_KEY, STORAGE_PROBLEMS } from './storage.js';
 
@@ -113,8 +113,12 @@ function cancel(booking) {
     render();
     return;
   }
-  render();
-  showMessage(messages, `Бронь ${booking.number} отменена. Дом «${booking.houseName}» снова свободен ${formatStay(booking.from, booking.nights)}.`, 'ok');
+  const { bookings } = render();
+  // Демо-занятость считается от сегодня, поэтому на те же даты дом может оставаться занятым
+  const house = getHouse(booking.houseId);
+  const freed = house && !findConflict(house, booking, bookings);
+  const tail = freed ? ` Дом «${booking.houseName}» снова свободен ${formatStay(booking.from, booking.nights)}.` : '';
+  showMessage(messages, `Бронь ${booking.number} отменена.${tail}`, 'ok');
   list.querySelector(`[data-number="${booking.number}"] .rebook`)?.focus();
 }
 
