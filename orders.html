@@ -43,7 +43,15 @@
 
     <p class="demo-note"><span class="label">Учебное демо:</span> бронирования сохраняются только в этом браузере, оплаты нет</p>
 
-    <p class="notice">Раздел в разработке: здесь будет список броней с отменой.</p>
+    <div class="orders-top">
+      <div class="notice-list" id="storage-notice"></div>
+      <div class="notice-list" id="orders-messages" aria-live="polite"></div>
+      <p class="label" id="orders-count"></p>
+    </div>
+
+    <ul class="orders-list" id="orders-list"></ul>
+
+    <p class="notice" id="orders-empty" hidden>Броней пока нет. Выберите дом в каталоге.</p>
   </main>
 
   <footer class="site-footer">
