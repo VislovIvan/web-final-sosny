@@ -43,7 +43,60 @@
 
     <p class="demo-note"><span class="label">Учебное демо:</span> бронирования сохраняются только в этом браузере, оплаты нет</p>
 
-    <p class="notice">Раздел в разработке: здесь будет форма брони выбранного дома.</p>
+    <section class="notice booking-missing" id="booking-missing" aria-live="polite" hidden>
+      <p id="missing-text"></p>
+      <a class="btn btn-primary" href="catalog.html">Перейти в каталог</a>
+    </section>
+
+    <div class="booking-layout" id="booking-layout" hidden>
+      <section class="window house-window" aria-labelledby="house-window-title">
+        <div class="window-bar"><h2 class="window-title" id="house-window-title">Выбранный дом</h2></div>
+        <div class="window-body house-body">
+          <p class="label" id="house-num"></p>
+          <h3 class="house-title" id="house-name"></h3>
+          <p class="muted" id="house-desc"></p>
+          <ul class="house-tags" id="house-tags"></ul>
+          <dl class="facts">
+            <dt>Вместимость</dt><dd id="house-capacity"></dd>
+            <dt>Цена за ночь</dt><dd class="price" id="house-price"></dd>
+          </dl>
+          <a class="link" id="change-house" href="catalog.html">Выбрать другой дом</a>
+        </div>
+      </section>
+
+      <section class="window form-window" aria-labelledby="form-window-title">
+        <div class="window-bar"><h2 class="window-title" id="form-window-title">Даты и гости</h2></div>
+        <form class="window-body booking-form" id="booking-form" novalidate>
+          <div class="field">
+            <label class="field-label" for="from">Дата заезда</label>
+            <input class="input" type="date" id="from" name="from" required aria-describedby="from-hint from-error">
+            <p class="field-hint" id="from-hint"></p>
+            <p class="field-error" id="from-error"></p>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label class="field-label" for="nights">Ночей</label>
+              <input class="input" type="number" id="nights" name="nights" min="1" max="30" step="1" inputmode="numeric" required aria-describedby="nights-error">
+              <p class="field-error" id="nights-error"></p>
+            </div>
+            <div class="field">
+              <label class="field-label" for="guests">Гостей</label>
+              <input class="input" type="number" id="guests" name="guests" min="1" step="1" inputmode="numeric" required aria-describedby="guests-hint guests-error">
+              <p class="field-hint" id="guests-hint"></p>
+              <p class="field-error" id="guests-error"></p>
+            </div>
+          </div>
+          <div class="booking-total" aria-live="polite">
+            <p class="label">Итого</p>
+            <p class="total-calc" id="total-calc"></p>
+            <p class="total-value" id="total-value"></p>
+          </div>
+          <div class="notice-list" id="form-messages" aria-live="polite"></div>
+          <button class="btn btn-primary btn-block" type="submit" id="confirm">Подтвердить бронь</button>
+          <p class="field-hint">Оплаты нет: бронь учебная и хранится только в этом браузере.</p>
+        </form>
+      </section>
+    </div>
   </main>
 
   <footer class="site-footer">

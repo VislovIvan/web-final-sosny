@@ -1,1 +1,91 @@
-/* Оформление: форма брони и итог */
+/* Оформление: выбранный дом, форма брони, итог */
+
+.booking-missing {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 24px;
+  font-size: 18px;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.booking-layout {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+.house-body {
+  display: grid;
+  gap: 12px;
+}
+
+.house-title {
+  font-size: 40px;
+}
+
+.house-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.house-body .link {
+  justify-self: start;
+}
+
+.booking-form {
+  display: grid;
+  gap: 16px;
+}
+
+.booking-total {
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+  background: var(--bg-sunken);
+  border-radius: var(--r-md);
+}
+
+.total-calc {
+  color: var(--text-muted);
+}
+
+.total-value {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1.1;
+  -webkit-font-smoothing: none;
+}
+
+.total-value:empty,
+.field-hint:empty {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .booking-layout {
+    grid-template-columns: minmax(0, 1fr) 400px;
+    grid-template-areas:
+      "house form"
+      "forecast form";
+  }
+
+  .house-window {
+    grid-area: house;
+  }
+
+  .form-window {
+    grid-area: form;
+    position: sticky;
+    top: 84px;
+  }
+
+  .house-title {
+    font-size: 50px;
+  }
+}
