@@ -129,7 +129,7 @@ export function houseNumber(house) {
   return house.id.slice(1);
 }
 
-export function demoBusy(house, today = todayISO()) {
+function demoBusy(house, today = todayISO()) {
   return house.busy.map(({ offset, nights }) => ({ from: addDays(today, offset), nights }));
 }
 

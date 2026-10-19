@@ -1,5 +1,5 @@
 import { initLayout, el, icon, formatPrice, plural, showMessage } from './ui.js';
-import { MAX_DAYS_AHEAD, findConflict, getHouse, houseNumber, validateStay } from './data.js';
+import { MAX_DAYS_AHEAD, MAX_NIGHTS, findConflict, getHouse, houseNumber, validateStay } from './data.js';
 import { addDays, formatDate, formatStay, formatWeekday, todayISO } from './dates.js';
 import { addBooking, loadBookings, STORAGE_KEY, STORAGE_PROBLEMS } from './storage.js';
 import {
@@ -78,7 +78,7 @@ function update() {
   updateForecast(checkout ? { from: raw.from, nights } : null);
 
   if (errors.nights) {
-    totalCalc.textContent = 'Сумма появится, когда число ночей будет от 1 до 30.';
+    totalCalc.textContent = `Сумма появится, когда число ночей будет от 1 до ${MAX_NIGHTS}.`;
     totalValue.textContent = '';
   } else {
     totalCalc.textContent = `${formatPrice(house.price)} × ${nights} ${plural(nights, NIGHT_WORDS)}`;

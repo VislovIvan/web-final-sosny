@@ -71,12 +71,6 @@ const ICONS = {
     ['path', { d: 'M5 7V5a3 3 0 0 1 6 0v2', ...STROKE }],
     ['rect', { x: 3, y: 7, width: 10, height: 8, rx: 1, fill: 'currentColor' }],
   ],
-  arrow: [['path', { d: 'M2 8h11M9 4l4 4-4 4', ...STROKE }]],
-  back: [['path', { d: 'M14 8H3M7 4L3 8l4 4', ...STROKE }]],
-  refresh: [
-    ['path', { d: 'M13 8a5 5 0 1 1-1.5-3.5', ...STROKE }],
-    ['path', { d: 'M12 1v4H8', ...STROKE }],
-  ],
   sun: [
     ['circle', { cx: 8, cy: 8, r: 3, ...STROKE }],
     ['path', { d: 'M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4', ...STROKE }],
