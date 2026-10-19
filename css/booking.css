@@ -38,6 +38,14 @@
   justify-self: start;
 }
 
+@media (pointer: coarse) {
+  .house-body .link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+}
+
 .booking-form {
   display: grid;
   gap: 16px;

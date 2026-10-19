@@ -28,6 +28,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-height: 40px;
 }
 
 .brand-mark {
@@ -51,9 +52,22 @@
   display: block;
 }
 
-@media (max-width: 759px) {
+.site-header-inner {
+  gap: 8px;
+}
+
+@media (min-width: 760px) {
   .site-header-inner {
-    gap: 8px;
+    gap: 16px;
+  }
+}
+
+/* Планшет: пункты меню в строку, но цель нажатия не меньше 40 px */
+@media (pointer: coarse) and (min-width: 760px) {
+  .nav-link {
+    min-width: 40px;
+    padding: 12px 0 10px;
+    text-align: center;
   }
 }
 

@@ -156,10 +156,14 @@
   fill: var(--accent-ink);
 }
 
-/* На узкой схеме подпись дороги налезает на дома */
-@media (max-width: 599px) {
+/* На узкой схеме подпись дороги налезает на дома, показываем её с 600 px */
+.map-label-road {
+  display: none;
+}
+
+@media (min-width: 600px) {
   .map-label-road {
-    display: none;
+    display: inline;
   }
 }
 
@@ -471,14 +475,22 @@
 
 /* ── Карточка выбранного дома ── */
 
-.pick-body {
-  display: grid;
-  gap: 12px;
+/* Телефон и планшет: карточка прижата к низу экрана, как панель оформления */
+.pick-card {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  z-index: 15;
 }
 
-.pick-content {
-  display: grid;
-  gap: 12px;
+.pick-card.is-empty,
+.pick-card .window-bar,
+.pick-num,
+.pick-desc,
+.pick-tags,
+.pick-facts {
+  display: none;
 }
 
 .pick-card.is-empty .pick-content,
@@ -486,12 +498,29 @@
   display: none;
 }
 
+.pick-body {
+  padding: 12px 14px;
+}
+
+.pick-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name link"
+    "total link";
+  align-items: center;
+  gap: 2px 12px;
+}
+
 .pick-name {
-  font-size: 30px;
+  grid-area: name;
+  overflow: hidden;
+  font-size: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .pick-tags {
-  display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin: 0;
@@ -500,80 +529,26 @@
 }
 
 .pick-total {
-  display: grid;
-  gap: 6px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
+  grid-area: total;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 8px;
 }
 
 .pick-total-value {
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: 20px;
   line-height: 1.1;
   -webkit-font-smoothing: none;
 }
 
-/* Телефон и планшет: карточка выбора прижата к низу экрана, как панель оформления */
-@media (max-width: 959px) {
-  .pick-card {
-    position: fixed;
-    right: 10px;
-    bottom: 10px;
-    left: 10px;
-    z-index: 15;
-  }
+.pick-link {
+  grid-area: link;
+}
 
-  .pick-card.is-empty,
-  .pick-card .window-bar,
-  .pick-num,
-  .pick-desc,
-  .pick-tags,
-  .pick-facts {
-    display: none;
-  }
-
-  .pick-body {
-    padding: 12px 14px;
-  }
-
-  .pick-content {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "name link"
-      "total link";
-    gap: 2px 12px;
-    align-items: center;
-  }
-
-  .pick-name {
-    grid-area: name;
-    font-size: 20px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .pick-total {
-    grid-area: total;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0 8px;
-    padding: 0;
-    border: 0;
-  }
-
-  .pick-total-value {
-    font-size: 20px;
-  }
-
-  .pick-link {
-    grid-area: link;
-  }
-
-  body.has-pick {
-    padding-bottom: 110px;
-  }
+body.has-pick {
+  padding-bottom: 110px;
 }
 
 @media (min-width: 760px) {
@@ -614,13 +589,74 @@
     grid-area: list;
   }
 
+  /* Широкий экран: полная карточка в колонке справа */
   .pick-card {
     grid-area: pick;
     position: sticky;
     top: 84px;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    z-index: auto;
+  }
+
+  .pick-card.is-empty,
+  .pick-card .window-bar {
+    display: flex;
+  }
+
+  .pick-num,
+  .pick-desc {
+    display: block;
+  }
+
+  .pick-tags {
+    display: flex;
+  }
+
+  .pick-facts {
+    display: grid;
+  }
+
+  .pick-body {
+    display: grid;
+    gap: 12px;
+    padding: var(--space-3);
+  }
+
+  .pick-content {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: none;
+    gap: 12px;
+  }
+
+  .pick-name,
+  .pick-total,
+  .pick-link {
+    grid-area: auto;
+  }
+
+  .pick-name {
+    font-size: 30px;
+    white-space: normal;
+  }
+
+  .pick-total {
+    display: grid;
+    gap: 6px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .pick-total-value {
+    font-size: 30px;
   }
 
   .pick-link {
     width: 100%;
+  }
+
+  body.has-pick {
+    padding-bottom: 0;
   }
 }
