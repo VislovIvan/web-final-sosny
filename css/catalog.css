@@ -1,1 +1,626 @@
-/* Каталог: схема базы, список домов, фильтры */
+/* Каталог: даты и фильтры, схема базы, список домов, карточка выбора */
+
+.filters {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 12px;
+  align-items: end;
+}
+
+.filters-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.catalog-controls {
+  display: grid;
+}
+
+.catalog-controls .notice-list:not(:empty) {
+  margin-top: 12px;
+}
+
+.catalog-layout {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── Схема базы ── */
+
+.map {
+  position: relative;
+  aspect-ratio: 5 / 4;
+}
+
+.map-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.map-land {
+  fill: var(--bg-raised);
+}
+
+.map-water {
+  fill: var(--accent-soft);
+}
+
+.map-wave {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-sand {
+  fill: none;
+  stroke: url(#sand);
+  stroke-width: 80px;
+}
+
+.map-dot {
+  fill: var(--border-strong);
+}
+
+.map-shore {
+  fill: none;
+  stroke: var(--ink-line);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-road-edge,
+.map-lane-edge {
+  fill: none;
+  stroke: var(--ink-line);
+}
+
+.map-road,
+.map-lane {
+  fill: none;
+  stroke: var(--bg-raised);
+}
+
+.map-road-edge {
+  stroke-width: 46px;
+}
+
+.map-road {
+  stroke-width: 40px;
+}
+
+.map-lane-edge {
+  stroke-width: 28px;
+}
+
+.map-lane {
+  stroke-width: 22px;
+}
+
+.map-road-line {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 4px;
+  stroke-dasharray: 20 14;
+}
+
+.map-pier,
+.map-boat {
+  fill: var(--bg-raised);
+  stroke: var(--ink-line);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-plank {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-tree {
+  fill: var(--bg-sunken);
+  stroke: var(--ink-line);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}
+
+.map-trunk {
+  fill: var(--ink-line);
+}
+
+.map-label {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  fill: var(--text-faint);
+}
+
+.map-label-water {
+  fill: var(--accent-ink);
+}
+
+/* На узкой схеме подпись дороги налезает на дома */
+@media (max-width: 599px) {
+  .map-label-road {
+    display: none;
+  }
+}
+
+/* Дом на схеме: настоящая кнопка поверх картинки */
+.map-house {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1;
+  -webkit-font-smoothing: none;
+  color: var(--text);
+  background-color: var(--bg-raised);
+  border: var(--rule) solid var(--ink-line);
+  border-radius: var(--r-sm);
+  box-shadow: var(--hard-sm);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 70ms var(--ease-out),
+    box-shadow 70ms var(--ease-out),
+    background-color 120ms var(--ease-out);
+}
+
+.map-house:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.map-house[aria-pressed="true"] {
+  z-index: 2;
+  color: var(--accent-ink);
+  background-color: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.map-house.is-busy {
+  color: var(--text-muted);
+  border-color: var(--border-strong);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.map-house.is-busy:active {
+  transform: none;
+}
+
+@media (hover: hover) {
+  .map-house:not(.is-busy):not([aria-pressed="true"]):hover {
+    background-color: var(--bg-sunken);
+  }
+}
+
+@media (pointer: coarse) {
+  .map-house {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Значок состояния в углу: замок у занятого, галочка у выбранного */
+.map-house-mark {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: var(--rule) solid var(--ink-line);
+  border-radius: 4px;
+}
+
+.map-house-mark .icon {
+  width: 12px;
+  height: 12px;
+}
+
+.map-house.is-busy .map-house-mark {
+  display: grid;
+  color: var(--text);
+  background: var(--bg-raised);
+}
+
+.map-house[aria-pressed="true"] .map-house-mark {
+  display: grid;
+  color: var(--on-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Название выбранного дома под кнопкой */
+.map-house-name {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  translate: -50% 0;
+  display: none;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  color: var(--accent-ink);
+  background: var(--bg-raised);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+}
+
+.map-house[aria-pressed="true"] .map-house-name {
+  display: block;
+}
+
+.map-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  padding: 8px 14px;
+  font-size: 14px;
+  white-space: nowrap;
+  color: var(--text-muted);
+  background: var(--bg-raised);
+  border: var(--rule) dashed var(--border-strong);
+  border-radius: var(--r-md);
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0;
+  padding: 12px 16px;
+  list-style: none;
+  font-size: 14px;
+  color: var(--text-muted);
+  border-top: var(--rule) solid var(--ink-line);
+}
+
+.map-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-key {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  -webkit-font-smoothing: none;
+  color: var(--text);
+  background-color: var(--bg-raised);
+  border: var(--rule) solid var(--ink-line);
+  border-radius: 4px;
+}
+
+.legend-key.is-selected {
+  color: var(--accent-ink);
+  background-color: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.legend-key.is-busy {
+  color: var(--text-muted);
+  border-color: var(--border-strong);
+}
+
+/* ── Список домов ── */
+
+.house-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.house-list li + li {
+  border-top: 1px solid var(--border);
+}
+
+.house-row {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-areas:
+    "num main"
+    "num side";
+  gap: 10px 14px;
+  width: 100%;
+  padding: 16px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 120ms var(--ease-out);
+}
+
+.house-row:focus-visible {
+  outline-offset: -4px;
+}
+
+@media (hover: hover) {
+  .house-row:not(.is-busy):not([aria-pressed="true"]):hover {
+    background: var(--bg-sunken);
+  }
+}
+
+.house-row[aria-pressed="true"] {
+  background: var(--accent-soft);
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+
+.house-row.is-busy {
+  cursor: not-allowed;
+}
+
+.house-num {
+  grid-area: num;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  -webkit-font-smoothing: none;
+  background-color: var(--bg-raised);
+  border: var(--rule) solid var(--ink-line);
+  border-radius: var(--r-sm);
+}
+
+.house-row[aria-pressed="true"] .house-num {
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.house-row.is-busy .house-num {
+  color: var(--text-muted);
+  border-color: var(--border-strong);
+}
+
+.house-main {
+  grid-area: main;
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.house-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.2;
+  -webkit-font-smoothing: none;
+}
+
+.house-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.house-busy {
+  font-size: 14px;
+  color: var(--danger);
+}
+
+.house-busy:empty {
+  display: none;
+}
+
+.house-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.house-side {
+  grid-area: side;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.house-row.is-busy .house-name,
+.house-row.is-busy .price {
+  color: var(--text-muted);
+}
+
+.list-empty {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 20px 16px;
+  color: var(--text-muted);
+}
+
+/* ── Карточка выбранного дома ── */
+
+.pick-body {
+  display: grid;
+  gap: 12px;
+}
+
+.pick-content {
+  display: grid;
+  gap: 12px;
+}
+
+.pick-card.is-empty .pick-content,
+.pick-card:not(.is-empty) .pick-empty {
+  display: none;
+}
+
+.pick-name {
+  font-size: 30px;
+}
+
+.pick-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pick-total {
+  display: grid;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.pick-total-value {
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 1.1;
+  -webkit-font-smoothing: none;
+}
+
+/* Телефон и планшет: карточка выбора прижата к низу экрана, как панель оформления */
+@media (max-width: 959px) {
+  .pick-card {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    z-index: 15;
+  }
+
+  .pick-card.is-empty,
+  .pick-card .window-bar,
+  .pick-num,
+  .pick-desc,
+  .pick-tags,
+  .pick-facts {
+    display: none;
+  }
+
+  .pick-body {
+    padding: 12px 14px;
+  }
+
+  .pick-content {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name link"
+      "total link";
+    gap: 2px 12px;
+    align-items: center;
+  }
+
+  .pick-name {
+    grid-area: name;
+    font-size: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .pick-total {
+    grid-area: total;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 8px;
+    padding: 0;
+    border: 0;
+  }
+
+  .pick-total-value {
+    font-size: 20px;
+  }
+
+  .pick-link {
+    grid-area: link;
+  }
+
+  body.has-pick {
+    padding-bottom: 110px;
+  }
+}
+
+@media (min-width: 760px) {
+  .filters {
+    padding: 20px 24px;
+  }
+
+  .house-row {
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    grid-template-areas: "num main side";
+    gap: 4px 14px;
+  }
+
+  .house-side {
+    display: grid;
+    justify-items: end;
+    align-content: start;
+  }
+
+  .filters-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .catalog-layout {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-areas:
+      "map pick"
+      "list pick";
+  }
+
+  .map-window {
+    grid-area: map;
+  }
+
+  .list-window {
+    grid-area: list;
+  }
+
+  .pick-card {
+    grid-area: pick;
+    position: sticky;
+    top: 84px;
+  }
+
+  .pick-link {
+    width: 100%;
+  }
+}

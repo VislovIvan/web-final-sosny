@@ -1,6 +1,11 @@
 // Общие данные базы «Сосны»: одни ID домов для всех страниц.
 // x и y: центр дома на схеме в процентах. busy: демо-занятость, offset в днях от сегодня.
 
+import { addDays, parseISODate, rangesOverlap, todayISO } from './dates.js';
+
+export const MAX_NIGHTS = 30;
+export const MAX_DAYS_AHEAD = 365;
+
 export const HOUSES = [
   {
     id: 'h1',
@@ -122,4 +127,60 @@ export function getHouse(id) {
 
 export function houseNumber(house) {
   return house.id.slice(1);
+}
+
+export function demoBusy(house, today = todayISO()) {
+  return house.busy.map(({ offset, nights }) => ({ from: addDays(today, offset), nights }));
+}
+
+// Первая занятость дома на эти ночи: демо-данные или активная бронь из хранилища
+export function findConflict(house, stay, bookings = []) {
+  const own = bookings
+    .filter((booking) => booking.houseId === house.id && booking.status === 'active')
+    .map((booking) => ({ from: booking.from, nights: booking.nights, booking }));
+  return [...demoBusy(house), ...own].find((range) => rangesOverlap(range, stay)) ?? null;
+}
+
+const COUNT_TEXTS = {
+  nights: {
+    empty: 'Укажите число ночей.',
+    whole: 'Число ночей должно быть целым.',
+    min: 'Минимум 1 ночь.',
+    max: () => `Не больше ${MAX_NIGHTS} ночей.`,
+  },
+  guests: {
+    empty: 'Укажите число гостей.',
+    whole: 'Число гостей должно быть целым.',
+    min: 'Нужен хотя бы 1 гость.',
+    max: (max) => (max === MAX_GUESTS ? `Не больше ${max} гостей: это самый большой дом.` : `Не больше ${max} гостей в этом доме.`),
+  },
+};
+
+function checkCount(raw, max, texts) {
+  const text = String(raw ?? '').trim().replace(',', '.');
+  if (text === '') return texts.empty;
+  const number = Number(text);
+  if (!Number.isFinite(number)) return 'Введите число цифрами.';
+  if (!Number.isInteger(number)) return texts.whole;
+  if (number < 1) return texts.min;
+  if (number > max) return texts.max(max);
+  return null;
+}
+
+// Проверка полей поездки из формы: возвращает ошибки по именам полей
+export function validateStay(raw, maxGuests = MAX_GUESTS) {
+  const errors = {};
+  const today = todayISO();
+  if (!raw.from) errors.from = 'Укажите дату заезда.';
+  else if (!parseISODate(raw.from)) errors.from = 'Дата указана неверно.';
+  else if (raw.from < today) errors.from = 'Дата заезда не может быть раньше сегодняшней.';
+  else if (raw.from > addDays(today, MAX_DAYS_AHEAD)) errors.from = 'Бронь открыта только на год вперёд.';
+
+  for (const field of ['nights', 'guests']) {
+    if (!(field in raw)) continue;
+    const max = field === 'nights' ? MAX_NIGHTS : maxGuests;
+    const error = checkCount(raw[field], max, COUNT_TEXTS[field]);
+    if (error) errors[field] = error;
+  }
+  return errors;
 }

@@ -147,13 +147,10 @@
   white-space: nowrap;
 }
 
+/* Список сообщений остаётся в DOM пустым, чтобы aria-live срабатывал */
 .notice-list {
   display: grid;
   gap: 10px;
-}
-
-.notice-list:empty {
-  display: none;
 }
 
 .appear {
@@ -185,6 +182,11 @@
 }
 
 /* ── Поля форм ── */
+
+/* Поле даты в Chrome на 2px выше остальных полей */
+.input[type="date"] {
+  height: 48px;
+}
 
 .field-error:empty {
   display: none;

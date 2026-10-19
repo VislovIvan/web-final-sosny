@@ -43,7 +43,167 @@
 
     <p class="demo-note"><span class="label">Учебное демо:</span> бронирования сохраняются только в этом браузере, оплаты нет</p>
 
-    <p class="notice">Раздел в разработке: здесь будут схема базы, список домов и фильтры.</p>
+    <div class="catalog-controls">
+      <form class="filters card-soft" id="filters" aria-label="Даты и фильтры" novalidate>
+        <div class="filters-grid">
+          <label class="field">
+            <span class="field-label">Заезд</span>
+            <input class="input" type="date" id="from" name="from" required aria-describedby="dates-error">
+          </label>
+          <label class="field">
+            <span class="field-label">Ночей</span>
+            <input class="input" type="number" id="nights" name="nights" min="1" max="30" step="1" inputmode="numeric" required aria-describedby="dates-error">
+          </label>
+          <label class="field">
+            <span class="field-label">Гостей не меньше</span>
+            <select class="select" id="guests" name="guests">
+              <option value="">Любое</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="field-label">Цена за ночь до</span>
+            <select class="select" id="price" name="price">
+              <option value="">Любая</option>
+              <option value="5000">5 000 ₽</option>
+              <option value="7500">7 500 ₽</option>
+              <option value="10000">10 000 ₽</option>
+              <option value="12000">12 000 ₽</option>
+            </select>
+          </label>
+        </div>
+        <p class="field-error" id="dates-error"></p>
+        <div class="filters-foot">
+          <p class="label" id="result-count" aria-live="polite"></p>
+          <button class="btn btn-sm" type="button" id="reset-filters">Сбросить фильтры</button>
+        </div>
+      </form>
+      <div class="notice-list" id="storage-notice"></div>
+      <div class="notice-list" id="catalog-messages" aria-live="polite"></div>
+      <p class="visually-hidden" id="selection-status" aria-live="polite"></p>
+    </div>
+
+    <div class="catalog-layout">
+      <section class="window map-window" aria-labelledby="map-title">
+        <div class="window-bar"><h2 class="window-title" id="map-title">Схема базы</h2></div>
+        <div class="map" id="map">
+          <svg class="map-art" viewBox="0 0 1000 800" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <defs>
+              <pattern id="sand" width="12" height="12" patternUnits="userSpaceOnUse">
+                <circle class="map-dot" cx="3" cy="3" r="1.6"/>
+                <circle class="map-dot" cx="9" cy="9" r="1.6"/>
+              </pattern>
+              <symbol id="pine" viewBox="0 0 40 56">
+                <path class="map-tree" d="M20 2l11 15h-6l10 14h-7l10 15H2l10-15H5l10-14H9z"/>
+                <path class="map-trunk" d="M17 46h6v8h-6z"/>
+              </symbol>
+            </defs>
+            <rect class="map-land" width="1000" height="800"/>
+            <path class="map-sand" d="M0 214C50 222 100 206 160 196C250 180 300 200 390 208C470 214 520 186 600 176C660 168 700 202 780 196C860 190 930 150 1000 170"/>
+            <path class="map-water" d="M0 0H1000V170C930 150 860 190 780 196C700 202 660 168 600 176C520 186 470 214 390 208C300 200 250 180 160 196C100 206 50 222 0 214Z"/>
+            <path class="map-wave" d="M90 150q15-10 30 0t30 0M300 130q15-10 30 0t30 0M450 100q15-10 30 0t30 0M800 70q15-10 30 0t30 0M880 120q15-10 30 0t30 0M740 150q15-10 30 0t30 0"/>
+            <path class="map-shore" d="M0 214C50 222 100 206 160 196C250 180 300 200 390 208C470 214 520 186 600 176C660 168 700 202 780 196C860 190 930 150 1000 170"/>
+            <path class="map-lane-edge" d="M600 470C604 420 596 330 600 236"/>
+            <path class="map-lane" d="M600 470C604 420 596 330 600 236"/>
+            <path class="map-road-edge" d="M-20 478C200 448 380 488 560 466S860 432 1020 446"/>
+            <path class="map-road" d="M-20 478C200 448 380 488 560 466S860 432 1020 446"/>
+            <path class="map-road-line" d="M-20 478C200 448 380 488 560 466S860 432 1020 446"/>
+            <path class="map-pier" d="M588 86h24v150h-24zM556 72h88v24h-88z"/>
+            <path class="map-plank" d="M588 110h24M588 124h24M588 138h24M588 152h24M588 166h24M588 180h24M588 194h24M588 208h24M588 222h24"/>
+            <path class="map-boat" d="M664 126h52l-10 16h-32z"/>
+          <use href="#pine" x="-10" y="690" width="40" height="56"/>
+          <use href="#pine" x="50" y="690" width="40" height="56"/>
+          <use href="#pine" x="110" y="690" width="40" height="56"/>
+          <use href="#pine" x="170" y="690" width="40" height="56"/>
+          <use href="#pine" x="230" y="690" width="40" height="56"/>
+          <use href="#pine" x="290" y="690" width="40" height="56"/>
+          <use href="#pine" x="350" y="690" width="40" height="56"/>
+          <use href="#pine" x="410" y="690" width="40" height="56"/>
+          <use href="#pine" x="470" y="690" width="40" height="56"/>
+          <use href="#pine" x="530" y="690" width="40" height="56"/>
+          <use href="#pine" x="590" y="690" width="40" height="56"/>
+          <use href="#pine" x="650" y="690" width="40" height="56"/>
+          <use href="#pine" x="710" y="690" width="40" height="56"/>
+          <use href="#pine" x="770" y="690" width="40" height="56"/>
+          <use href="#pine" x="830" y="690" width="40" height="56"/>
+          <use href="#pine" x="890" y="690" width="40" height="56"/>
+          <use href="#pine" x="950" y="690" width="40" height="56"/>
+          <use href="#pine" x="20" y="736" width="40" height="56"/>
+          <use href="#pine" x="80" y="736" width="40" height="56"/>
+          <use href="#pine" x="140" y="736" width="40" height="56"/>
+          <use href="#pine" x="200" y="736" width="40" height="56"/>
+          <use href="#pine" x="260" y="736" width="40" height="56"/>
+          <use href="#pine" x="320" y="736" width="40" height="56"/>
+          <use href="#pine" x="380" y="736" width="40" height="56"/>
+          <use href="#pine" x="440" y="736" width="40" height="56"/>
+          <use href="#pine" x="500" y="736" width="40" height="56"/>
+          <use href="#pine" x="560" y="736" width="40" height="56"/>
+          <use href="#pine" x="620" y="736" width="40" height="56"/>
+          <use href="#pine" x="680" y="736" width="40" height="56"/>
+          <use href="#pine" x="740" y="736" width="40" height="56"/>
+          <use href="#pine" x="800" y="736" width="40" height="56"/>
+          <use href="#pine" x="860" y="736" width="40" height="56"/>
+          <use href="#pine" x="920" y="736" width="40" height="56"/>
+          <use href="#pine" x="980" y="736" width="40" height="56"/>
+          <use href="#pine" x="6" y="250" width="40" height="56"/>
+          <use href="#pine" x="2" y="380" width="40" height="56"/>
+          <use href="#pine" x="950" y="230" width="40" height="56"/>
+          <use href="#pine" x="196" y="372" width="40" height="56"/>
+          <use href="#pine" x="372" y="372" width="40" height="56"/>
+          <use href="#pine" x="820" y="372" width="40" height="56"/>
+          <use href="#pine" x="196" y="640" width="40" height="56"/>
+          <use href="#pine" x="392" y="640" width="40" height="56"/>
+          <use href="#pine" x="588" y="640" width="40" height="56"/>
+          <use href="#pine" x="776" y="640" width="40" height="56"/>
+            <text class="map-label map-label-water" x="36" y="64">ЛАДОЖСКОЕ ОЗЕРО</text>
+            <text class="map-label" x="656" y="92">ПРИЧАЛ</text>
+            <text class="map-label map-label-road" x="20" y="540">← ПРИОЗЕРСК 15 КМ</text>
+          </svg>
+          <p class="map-empty" id="map-empty" hidden>Нет домов под эти фильтры</p>
+        </div>
+        <ul class="map-legend" aria-label="Обозначения на схеме">
+          <li><span class="legend-key" aria-hidden="true">1</span>Свободен</li>
+          <li><span class="legend-key is-selected" aria-hidden="true">1</span>Выбран</li>
+          <li><span class="legend-key is-busy hatch" aria-hidden="true">1</span>Занят</li>
+        </ul>
+      </section>
+
+      <aside class="window pick-card is-empty" id="pick-card" aria-labelledby="pick-title">
+        <div class="window-bar"><h2 class="window-title" id="pick-title">Выбранный дом</h2></div>
+        <div class="window-body pick-body">
+          <p class="pick-empty muted">Нажмите на свободный дом на схеме или в списке.</p>
+          <div class="pick-content">
+            <p class="label pick-num" id="pick-num"></p>
+            <h3 class="pick-name" id="pick-name"></h3>
+            <p class="pick-desc muted" id="pick-desc"></p>
+            <ul class="pick-tags" id="pick-tags"></ul>
+            <dl class="facts pick-facts">
+              <dt>Заезд</dt><dd id="pick-from"></dd>
+              <dt>Выезд</dt><dd id="pick-to"></dd>
+              <dt>Вместимость</dt><dd id="pick-capacity"></dd>
+              <dt>Цена за ночь</dt><dd class="price" id="pick-price"></dd>
+            </dl>
+            <p class="pick-total"><span class="label" id="pick-total-label"></span><span class="pick-total-value" id="pick-total"></span></p>
+            <a class="btn btn-primary pick-link" id="pick-link" href="booking.html">Оформить</a>
+          </div>
+        </div>
+      </aside>
+
+      <section class="window list-window" aria-labelledby="list-title">
+        <div class="window-bar"><h2 class="window-title" id="list-title">Дома</h2></div>
+        <ul class="house-list" id="house-list"></ul>
+        <div class="list-empty" id="list-empty" hidden>
+          <p>Под эти условия домов нет. Уменьшите число гостей или поднимите цену.</p>
+          <button class="btn btn-sm" type="button" id="empty-reset">Сбросить фильтры</button>
+        </div>
+      </section>
+    </div>
   </main>
 
   <footer class="site-footer">
