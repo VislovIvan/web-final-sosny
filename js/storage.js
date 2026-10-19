@@ -1,11 +1,14 @@
 // Общее хранилище броней: один ключ localStorage для всех страниц
 
+import { rangesOverlap } from './dates.js';
+
 export const STORAGE_KEY = 'sosny.bookings.v1';
 
 export const STORAGE_PROBLEMS = {
   corrupt: 'Сохранённые брони повреждены и не читаются.',
   blocked: 'Браузер запретил сохранять данные на этом сайте.',
   missing: 'Бронь не найдена: возможно, её уже отменили в другой вкладке.',
+  overlap: 'На эти даты в этом доме уже есть ваша бронь.',
 };
 
 const STATUSES = ['active', 'cancelled'];
@@ -72,6 +75,11 @@ export function formatBookingNumber(seq) {
 
 export function addBooking({ house, from, nights, guests }) {
   const { store } = readStore();
+  // Повторное подтверждение тех же дат не создаёт вторую запись
+  const overlap = store.bookings.find(
+    (item) => item.houseId === house.id && item.status === 'active' && rangesOverlap(item, { from, nights }),
+  );
+  if (overlap) return { ok: false, problem: 'overlap', booking: overlap };
   const seq = store.seq + 1;
   const booking = {
     number: formatBookingNumber(seq),
