@@ -96,13 +96,27 @@
           <p class="field-hint">Оплаты нет: бронь учебная и хранится только в этом браузере.</p>
         </form>
       </section>
+
+      <section class="window forecast-window" id="forecast" aria-labelledby="forecast-title" aria-busy="false">
+        <div class="window-bar"><h2 class="window-title" id="forecast-title">Прогноз на даты поездки</h2></div>
+        <div class="window-body forecast-body" aria-live="polite">
+          <p class="muted" id="forecast-note"></p>
+          <p class="muted" id="forecast-loading" hidden>Загружаем прогноз с Open-Meteo</p>
+          <ul class="forecast-list" id="forecast-list"></ul>
+          <div class="notice notice-error" id="forecast-error" hidden>
+            <p id="forecast-error-text"></p>
+            <button class="btn btn-sm" type="button" id="forecast-retry">Повторить</button>
+          </div>
+          <p class="field-hint">Прогноз Open-Meteo для района базы, по дням от заезда до выезда.</p>
+        </div>
+      </section>
     </div>
   </main>
 
   <footer class="site-footer">
     <div class="site-footer-inner">
       <p>«Сосны»: вымышленная база отдыха, учебный проект курса «Веб-дизайн» в СПбГУПТД.</p>
-      <p>Вислов Иван, группа 5-МВ-5. <a class="link" href="https://github.com/VislovIvan/web-final-sosny">Код на GitHub</a></p>
+      <p>Вислов Иван, группа 5-МВ-5. Погода: <a class="link" href="https://open-meteo.com/">Open-Meteo</a>. <a class="link" href="https://github.com/VislovIvan/web-final-sosny">Код на GitHub</a></p>
     </div>
   </footer>
 </body>

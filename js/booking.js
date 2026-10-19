@@ -1,7 +1,15 @@
-import { initLayout, el, formatPrice, plural, showMessage } from './ui.js';
+import { initLayout, el, icon, formatPrice, plural, showMessage } from './ui.js';
 import { MAX_DAYS_AHEAD, findConflict, getHouse, houseNumber, validateStay } from './data.js';
 import { addDays, formatDate, formatStay, formatWeekday, todayISO } from './dates.js';
 import { addBooking, loadBookings, STORAGE_KEY, STORAGE_PROBLEMS } from './storage.js';
+import {
+  FORECAST_DAYS,
+  WeatherError,
+  describeWeather,
+  fetchDailyForecast,
+  formatTemperature,
+  weatherKind,
+} from './weather.js';
 
 initLayout();
 
@@ -67,6 +75,8 @@ function update() {
   if (!errors.guests) back.set('guests', raw.guests);
   $('#change-house').href = `catalog.html?${back}`;
 
+  updateForecast(checkout ? { from: raw.from, nights } : null);
+
   if (errors.nights) {
     totalCalc.textContent = 'Сумма появится, когда число ночей будет от 1 до 30.';
     totalValue.textContent = '';
@@ -75,6 +85,87 @@ function update() {
     totalValue.textContent = formatPrice(house.price * nights);
   }
   return { errors, conflict, values: { from: raw.from, nights, guests: Number(raw.guests) } };
+}
+
+// Прогноз на 16 дней загружается один раз, смена дат только перерисовывает строки
+const forecast = {
+  box: $('#forecast'),
+  note: $('#forecast-note'),
+  loading: $('#forecast-loading'),
+  list: $('#forecast-list'),
+  error: $('#forecast-error'),
+  errorText: $('#forecast-error-text'),
+  days: null,
+  status: 'idle',
+  stay: null,
+  key: '',
+  controller: null,
+};
+
+function forecastRow(date) {
+  const { min, max, code } = forecast.days.get(date);
+  return el('li', { class: 'forecast-day' },
+    el('span', { class: 'forecast-date', text: `${formatWeekday(date)}, ${formatDate(date)}` }),
+    el('span', { class: 'forecast-desc' }, icon(weatherKind(code)), describeWeather(code)),
+    el('span', { class: 'forecast-temp', text: `от ${formatTemperature(min, false)} до ${formatTemperature(max)}` }),
+  );
+}
+
+function renderForecast() {
+  const { stay, status } = forecast;
+  const lastDay = addDays(todayISO(), FORECAST_DAYS - 1);
+  let note = '';
+  let rows = [];
+  if (!stay) {
+    note = 'Укажите дату заезда и число ночей, чтобы увидеть прогноз.';
+  } else if (stay.from > lastDay) {
+    const opens = addDays(stay.from, 1 - FORECAST_DAYS);
+    note = `Прогноз на ${formatDate(stay.from)} появится ближе к дате: Open-Meteo считает погоду на ${FORECAST_DAYS} дней вперёд. Загляните сюда с ${formatDate(opens)}.`;
+  } else if (status === 'idle') {
+    loadForecast();
+    return;
+  } else if (status === 'ready') {
+    const days = Array.from({ length: stay.nights + 1 }, (_, index) => addDays(stay.from, index));
+    const known = days.filter((day) => forecast.days.has(day));
+    rows = known.map(forecastRow);
+    if (!known.length) note = 'Прогноз на эти даты появится ближе к поездке.';
+    else if (known.length < days.length) note = `Дальше ${formatDate(known.at(-1))} прогноза пока нет.`;
+  }
+  const waiting = Boolean(stay) && stay.from <= lastDay;
+  forecast.note.textContent = note;
+  forecast.list.replaceChildren(...rows);
+  forecast.loading.hidden = !(waiting && status === 'loading');
+  forecast.error.hidden = !(waiting && status === 'error');
+  forecast.box.setAttribute('aria-busy', String(waiting && status === 'loading'));
+}
+
+function updateForecast(stay) {
+  const key = `${stay ? `${stay.from}/${stay.nights}` : 'none'}/${forecast.status}`;
+  if (key === forecast.key) return;
+  forecast.key = key;
+  forecast.stay = stay;
+  renderForecast();
+}
+
+async function loadForecast() {
+  forecast.controller?.abort();
+  const controller = new AbortController();
+  forecast.controller = controller;
+  const setStatus = (status) => {
+    forecast.status = status;
+    forecast.key = '';
+    updateForecast(forecast.stay);
+  };
+  setStatus('loading');
+  try {
+    forecast.days = await fetchDailyForecast(controller.signal);
+    setStatus('ready');
+  } catch (error) {
+    if (controller.signal.aborted) return;
+    const reason = error instanceof WeatherError ? error.message : 'Попробуйте ещё раз.';
+    forecast.errorText.textContent = `Не удалось загрузить прогноз. ${reason} Бронь можно оформить и без него.`;
+    setStatus('error');
+  }
 }
 
 function fillHouse() {
@@ -160,6 +251,10 @@ function initBooking() {
     });
   }
   form.addEventListener('submit', submit);
+  $('#forecast-retry').addEventListener('click', () => {
+    inputs.from.focus();
+    loadForecast();
+  });
 
   // Возврат кнопкой «Назад» после брони и брони из другой вкладки
   window.addEventListener('pageshow', (event) => {

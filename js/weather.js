@@ -54,9 +54,9 @@ export function weatherKind(code) {
   return 'rain';
 }
 
-export function formatTemperature(value) {
+export function formatTemperature(value, withUnit = true) {
   const rounded = Math.round(value) || 0;
-  return `${rounded > 0 ? '+' : ''}${rounded}\u202f°C`;
+  return `${rounded > 0 ? '+' : ''}${rounded}${withUnit ? '\u202f°C' : ''}`;
 }
 
 async function request(params, signal) {
